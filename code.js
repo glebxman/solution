@@ -1,23 +1,69 @@
-const facts = [
-    "Как-то раз убежал в аут, думая, что это ворота",
-    "Единственный футболист, который забил автогол с углового",
-    "Подкаты делает так, что сам улетает за пределы поля",
-    "После удара по мячу упал и сломал ворота",
-    "Пытался обвести соперника, но обвел сам себя",
-    "Во время пенальти так размахнулся, что потерял бутсу",
-    "Однажды перепутал футбол с регби и побежал с мячом в руках",
-    "Упал, симулируя нарушение, но забыл, что рядом никого не было",
-    "Пробил штрафной так, что мяч улетел на парковку",
-    "Попал мячом в судью, после чего получил красную карточку",
-    "Обыграл вратаря, но забыл, что нужно ещё забить в ворота",
-    "Решил сделать финт, но запутался в собственных ногах",
-    "Во время подачи углового случайно закрутил мяч в свои ворота",
-    "Отпраздновал гол, но оказалось, что свисток был до удара",
-    "Так мощно пробил мяч, что тот застрял между трибунами"
-];
+document.addEventListener('DOMContentLoaded', function() {
+    const music = document.getElementById('bgMusic');
+    const musicBtn = document.getElementById('musicToggle');
+    let isPlaying = false;
 
+    music.volume = 0;
 
-document.getElementById("fact-btn").addEventListener("click", function() {
-    const randomFact = facts[Math.floor(Math.random() * facts.length)];
-    document.getElementById("random-fact").innerHTML = `<p>${randomFact}</p>`;
+    function fadeIn() {
+        let vol = 0;
+        const targetVol = 0.3;
+        const interval = setInterval(() => {
+            if (vol < targetVol) {
+                vol += 0.02;
+                music.volume = vol;
+            } else {
+                clearInterval(interval);
+            }
+        }, 100);
+    }
+
+    function fadeOut() {
+        let vol = music.volume;
+        const interval = setInterval(() => {
+            if (vol > 0) {
+                vol -= 0.02;
+                music.volume = vol;
+            } else {
+                clearInterval(interval);
+                music.pause();
+            }
+        }, 100);
+    }
+
+    musicBtn.addEventListener('click', function() {
+        if (isPlaying) {
+            fadeOut();
+            musicBtn.classList.remove('playing');
+        } else {
+            music.play();
+            fadeIn();
+            musicBtn.classList.add('playing');
+        }
+        isPlaying = !isPlaying;
+    });
+
+    function animateStats() {
+        const stats = document.querySelectorAll('.stat-number');
+        
+        stats.forEach(stat => {
+            const target = parseInt(stat.getAttribute('data-target'));
+            let current = 0;
+            const increment = target / 100;
+            
+            const updateCount = () => {
+                if (current < target) {
+                    current += increment;
+                    stat.textContent = Math.ceil(current);
+                    setTimeout(updateCount, 10);
+                } else {
+                    stat.textContent = target;
+                }
+            };
+            
+            updateCount();
+        });
+    }
+
+    animateStats();
 });
