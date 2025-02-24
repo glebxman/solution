@@ -2,50 +2,162 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="style.css">
-    <script src="code.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Abdulaev Bahodir</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Assetto Coin</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .stats {
+            background-color: #2d2d2d;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 300px;
+            text-align: center;
+        }
+
+        .coin-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 20px 0;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .coin {
+            width: 100%;
+            height: 100%;
+            background-color: #ffd700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            transition: transform 0.1s;
+        }
+
+        .coin:active {
+            transform: scale(0.95);
+        }
+
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            animation: particleAnimation 1s ease-out forwards;
+        }
+
+        @keyframes particleAnimation {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+        }
+    </style>
 </head>
 <body>
-    <audio id="bgMusic" loop>
-        <source src="yeat.mp3" type="audio/mpeg">
-    </audio>
-    <button id="musicToggle" class="music-btn">🎵</button>
-    <div class="container">
-        <div class="profile">
-            <img src="https://cs15.pikabu.ru/post_img/2024/12/16/3/1734319626130659021.jpg" alt="Свастика">
-            <h1>Abdulaev Bahodir</h1>
-            <div class="social-links">
-                <a href="https://www.instagram.com/_bahayka_/?igsh=aDJwMzY3ZGdhMXJp&utm_source=qr" target="_blank"><i class="fab fa-instagram"></i></a>
-            </div>
-        </div>
-        <h2>Первый человек кто придумал свастику!</h2>
-        <div class="card"><p>Играть с ним опасно так как есть шанс стать без мамным</p> </div>
-        <div class="card"><p>Первый человек кто поставил рекодр! обматирил половину игроков поля и сделал их безмамными</p> </div>
-        <div class="card"><p>За одну игру с Баходиром камол стал геем и без хуя 10 раз</p></div>
-        <div class="card"><p>Играть с ним опасно так как есть шанс стать без мамным</p> </div>
-        <div class="card"><p>Во время игры у Бохадира встал хуй так что он порвал мяч</p></div>
-        <div class="stats">
-            <div class="stat-card">
-                <div class="stat-number" data-target="1000">0</div>
-                <div class="stat-label">Побед</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" data-target="500">0</div>
-                <div class="stat-label">Безмамных</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" data-target="300">0</div>
-                <div class="stat-label">Порванных мячей</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" data-target="2000">0</div>
-                <div class="stat-label">Отбитых мячей</div>
-            </div>
-        </div>
+    <div class="stats">
+        <h2>Balance: <span id="balance">0</span></h2>
+        <p>Clicks: <span id="clicks">0</span></p>
     </div>
-    <footer>Сделано с любовья 20wrap</p></footer>
+
+    <div class="coin-container" id="coinContainer">
+        <div class="coin" id="coin">+1</div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        const API_URL = '';
+        const coinElement = document.getElementById('coin');
+        const balanceElement = document.getElementById('balance');
+        const clicksElement = document.getElementById('clicks');
+        const coinContainer = document.getElementById('coinContainer');
+
+        let userId = tg.initDataUnsafe?.user?.id;
+        if (!userId) {
+            console.error('User ID not found');
+            alert('Please open this game through Telegram bot');
+        }
+
+        // Load initial stats
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_URL}/user/${userId}`);
+                const data = await response.json();
+                updateStats(data);
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        function updateStats(data) {
+            balanceElement.textContent = data.balance;
+            clicksElement.textContent = data.click_count;
+        }
+
+        function createParticle(x, y) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.textContent = '+1';
+            particle.style.left = x + 'px';
+            particle.style.top = y + 'px';
+            coinContainer.appendChild(particle);
+
+            particle.addEventListener('animationend', () => {
+                particle.remove();
+            });
+        }
+
+        coinElement.addEventListener('click', async (e) => {
+            // Create particle effect
+            const rect = coinElement.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            createParticle(x, y);
+
+            try {
+                const response = await fetch(`${API_URL}/click`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        click_power: 1
+                    })
+                });
+
+                const data = await response.json();
+                if (data.success) {
+                    updateStats(data);
+                }
+            } catch (error) {
+                console.error('Error updating click:', error);
+            }
+        });
+
+        // Load initial stats when page loads
+        loadStats();
+    </script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </body>
 </html>
