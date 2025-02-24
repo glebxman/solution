@@ -6,158 +6,283 @@
     <title>Assetto Coin</title>
     <style>
         body {
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            font-family: Arial, sans-serif;
-            background-color: #1a1a1a;
-            color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+            background-color: #f0f0f0;
         }
-
-        .stats {
-            background-color: #2d2d2d;
-            padding: 15px;
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
             border-radius: 10px;
-            margin-bottom: 20px;
-            width: 100%;
-            max-width: 300px;
-            text-align: center;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-
-        .coin-container {
-            position: relative;
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        .click-area {
             width: 200px;
             height: 200px;
-            margin: 20px 0;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .coin {
-            width: 100%;
-            height: 100%;
-            background-color: #ffd700;
+            margin: 20px auto;
+            background-color: #007bff;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            color: white;
             font-size: 24px;
-            font-weight: bold;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            cursor: pointer;
+            user-select: none;
             transition: transform 0.1s;
         }
-
-        .coin:active {
+        .click-area:active {
             transform: scale(0.95);
         }
-
-        .particle {
-            position: absolute;
-            pointer-events: none;
-            animation: particleAnimation 1s ease-out forwards;
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #dee2e6;
         }
-
-        @keyframes particleAnimation {
-            0% {
-                transform: translateY(0);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-50px);
-                opacity: 0;
-            }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 16px;
+        }
+        .tab.active {
+            border-bottom: 2px solid #007bff;
+            color: #007bff;
+            margin-bottom: -2px;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .skill-item, .mission-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background-color: #28a745;
+            border-radius: 5px;
+            transition: width 0.3s;
         }
     </style>
 </head>
 <body>
-    <div class="stats">
-        <h2>Balance: <span id="balance">0</span></h2>
-        <p>Clicks: <span id="clicks">0</span></p>
-    </div>
+    <div class="container">
+        <div class="stats">
+            <div>Баланс: <span id="balance">0</span></div>
+            <div>Сила тапа: <span id="tap-power">1</span></div>
+        </div>
 
-    <div class="coin-container" id="coinContainer">
-        <div class="coin" id="coin">+1</div>
+        <div class="tabs">
+            <button class="tab active" data-tab="game">Игра</button>
+            <button class="tab" data-tab="skills">Навыки</button>
+            <button class="tab" data-tab="missions">Задания</button>
+        </div>
+
+        <div id="game" class="tab-content active">
+            <div class="click-area" id="click-area">ТАП!</div>
+            <button class="button" id="watch-ad">Смотреть рекламу (+100 монет)</button>
+        </div>
+
+        <div id="skills" class="tab-content">
+            <div id="skills-list"></div>
+        </div>
+
+        <div id="missions" class="tab-content">
+            <div id="missions-list"></div>
+        </div>
     </div>
 
     <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand();
+        let userId = 0;
+        let userStats = { balance: 0, tap_power: 1 };
+        const API_URL = window.location.origin;
 
-        const API_URL = '';
-        const coinElement = document.getElementById('coin');
-        const balanceElement = document.getElementById('balance');
-        const clicksElement = document.getElementById('clicks');
-        const coinContainer = document.getElementById('coinContainer');
+        // Initialize Telegram WebApp
+        const webApp = window.Telegram.WebApp;
+        webApp.ready();
+        userId = webApp.initDataUnsafe.user.id;
 
-        let userId = tg.initDataUnsafe?.user?.id;
-        if (!userId) {
-            console.error('User ID not found');
-            alert('Please open this game through Telegram bot');
-        }
+        // DOM Elements
+        const balanceEl = document.getElementById('balance');
+        const tapPowerEl = document.getElementById('tap-power');
+        const clickArea = document.getElementById('click-area');
+        const skillsList = document.getElementById('skills-list');
+        const missionsList = document.getElementById('missions-list');
+        const watchAdBtn = document.getElementById('watch-ad');
 
-        // Load initial stats
-        async function loadStats() {
-            try {
-                const response = await fetch(`${API_URL}/user/${userId}`);
-                const data = await response.json();
-                updateStats(data);
-            } catch (error) {
-                console.error('Error loading stats:', error);
-            }
-        }
-
-        function updateStats(data) {
-            balanceElement.textContent = data.balance;
-            clicksElement.textContent = data.click_count;
-        }
-
-        function createParticle(x, y) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            particle.textContent = '+1';
-            particle.style.left = x + 'px';
-            particle.style.top = y + 'px';
-            coinContainer.appendChild(particle);
-
-            particle.addEventListener('animationend', () => {
-                particle.remove();
+        // Tab Navigation
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.tab).classList.add('active');
             });
-        }
+        });
 
-        coinElement.addEventListener('click', async (e) => {
-            // Create particle effect
-            const rect = coinElement.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            createParticle(x, y);
-
+        // Click Handler
+        clickArea.addEventListener('click', async () => {
             try {
-                const response = await fetch(`${API_URL}/click`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        user_id: userId,
-                        click_power: 1
-                    })
+                const response = await fetch(`${API_URL}/click/${userId}`, {
+                    method: 'POST'
                 });
-
                 const data = await response.json();
-                if (data.success) {
-                    updateStats(data);
-                }
+                userStats.balance += data.coins_earned;
+                balanceEl.textContent = userStats.balance;
+                updateStats();
             } catch (error) {
-                console.error('Error updating click:', error);
+                console.error('Error:', error);
             }
         });
 
-        // Load initial stats when page loads
-        loadStats();
+        // Watch Ad Handler
+        watchAdBtn.addEventListener('click', async () => {
+            try {
+                const response = await fetch(`${API_URL}/ad_reward/${userId}`, {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                updateStats();
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+
+        // Update Stats
+        async function updateStats() {
+            try {
+                const response = await fetch(`${API_URL}/stats/${userId}`);
+                userStats = await response.json();
+                balanceEl.textContent = userStats.balance;
+                tapPowerEl.textContent = userStats.tap_power;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // Update Skills
+        async function updateSkills() {
+            try {
+                const response = await fetch(`${API_URL}/skills/${userId}`);
+                const skills = await response.json();
+                skillsList.innerHTML = skills.map(skill => `
+                    <div class="skill-item">
+                        <div>
+                            <div>${getSkillName(skill.skill_type)} (Уровень ${skill.level})</div>
+                            <div>Стоимость улучшения: ${getUpgradeCost(skill.level)} монет</div>
+                        </div>
+                        <button class="button" onclick="upgradeSkill('${skill.skill_type}')"
+                            ${userStats.balance < getUpgradeCost(skill.level) ? 'disabled' : ''}>
+                            Улучшить
+                        </button>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // Update Missions
+        async function updateMissions() {
+            try {
+                const response = await fetch(`${API_URL}/missions/${userId}`);
+                const missions = await response.json();
+                missionsList.innerHTML = missions.map(mission => `
+                    <div class="mission-item">
+                        <div>
+                            <div>${getMissionName(mission.mission_type)}</div>
+                            <div>Награда: ${mission.reward} монет</div>
+                            <div class="progress-bar">
+                                <div class="progress-bar-fill" style="width: ${(mission.current_value / mission.target_value) * 100}%"></div>
+                            </div>
+                            <div>${mission.current_value}/${mission.target_value}</div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // Upgrade Skill
+        async function upgradeSkill(skillType) {
+            try {
+                const response = await fetch(`${API_URL}/upgrade_skill/${userId}/${skillType}`, {
+                    method: 'POST'
+                });
+                await updateStats();
+                await updateSkills();
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // Helper Functions
+        function getSkillName(skillType) {
+            const names = {
+                'tap_power': 'Сила тапа',
+                'auto_click': 'Авто-клик',
+                'bonus_multiplier': 'Множитель бонусов'
+            };
+            return names[skillType] || skillType;
+        }
+
+        function getMissionName(missionType) {
+            const names = {
+                'clicks': 'Сделать кликов',
+                'spend_coins': 'Потратить монет',
+                'upgrade_skills': 'Улучшить навыки'
+            };
+            return names[missionType] || missionType;
+        }
+
+        function getUpgradeCost(level) {
+            return Math.floor(100 * Math.pow(1.5, level - 1));
+        }
+
+        // Initial update
+        updateStats();
+        updateSkills();
+        updateMissions();
     </script>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </body>
 </html>
