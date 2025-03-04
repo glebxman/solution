@@ -2,36 +2,38 @@ document.addEventListener('DOMContentLoaded', () => {
     const audio = document.getElementById('music');
     const playPauseBtn = document.getElementById('playPauseBtn');
     const playPauseIcon = playPauseBtn.querySelector('i');
-    const progressBar = document.querySelector('.progress');
-    const progressContainer = document.querySelector('.progress-bar');
-    const currentTime = document.querySelector('.time.current');
-    const duration = document.querySelector('.time.duration');
+    const progressBar = document.querySelector('.progress-bar');
+    const progress = document.querySelector('.progress');
+    const currentTimeEl = document.querySelector('.time.current');
+    const durationEl = document.querySelector('.time.duration');
     const volumeSlider = document.getElementById('volumeSlider');
-    const volumeIcon = document.querySelector('.volume-container i');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
 
-    // Format time in minutes:seconds
-    function formatTime(seconds) {
-        const minutes = Math.floor(seconds / 60);
-        seconds = Math.floor(seconds % 60);
-        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    const songs = [
+        'Nvxus Eloy (Slowed).mp3',
+        'Wednexsday So High Up Ft Alyx .mp3'
+    ];
+
+    let currentSongIndex = 0;
+
+    function loadSong(index) {
+        audio.src = songs[index];
+        audio.load();
+        audio.play();
+        playPauseIcon.className = 'fas fa-pause';
     }
 
-    // Update progress bar and time displays
-    function updateProgress() {
-        const percent = (audio.currentTime / audio.duration) * 100;
-        progressBar.style.width = `${percent}%`;
-        currentTime.textContent = formatTime(audio.currentTime);
+    function playNextSong() {
+        currentSongIndex = (currentSongIndex + 1) % songs.length;
+        loadSong(currentSongIndex);
     }
 
-    // Set audio time when clicking progress bar
-    function setProgress(e) {
-        const width = this.clientWidth;
-        const clickX = e.offsetX;
-        const duration = audio.duration;
-        audio.currentTime = (clickX / width) * duration;
+    function playPrevSong() {
+        currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+        loadSong(currentSongIndex);
     }
 
-    // Toggle play/pause
     function togglePlayPause() {
         if (audio.paused) {
             audio.play();
@@ -42,32 +44,41 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Update volume
-    function updateVolume() {
-        audio.volume = volumeSlider.value / 100;
-        if (audio.volume === 0) {
-            volumeIcon.className = 'fas fa-volume-mute';
-        } else if (audio.volume < 0.5) {
-            volumeIcon.className = 'fas fa-volume-down';
-        } else {
-            volumeIcon.className = 'fas fa-volume-up';
+    function updateProgress() {
+        if (audio.currentTime > 0) {
+            const progressPercent = (audio.currentTime / audio.duration) * 100;
+            progress.style.width = `${progressPercent}%`;
+            
+            currentTimeEl.textContent = formatTime(audio.currentTime);
+            durationEl.textContent = formatTime(audio.duration);
         }
+    }
+
+    function setProgress(e) {
+        const width = this.clientWidth;
+        const clickX = e.offsetX;
+        const duration = audio.duration;
+        audio.currentTime = (clickX / width) * duration;
+    }
+
+    function formatTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = Math.floor(seconds % 60);
+        return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+    }
+
+    function setVolume() {
+        audio.volume = volumeSlider.value / 100;
     }
 
     // Event Listeners
     playPauseBtn.addEventListener('click', togglePlayPause);
+    prevBtn.addEventListener('click', playPrevSong);
+    nextBtn.addEventListener('click', playNextSong);
     audio.addEventListener('timeupdate', updateProgress);
-    progressContainer.addEventListener('click', setProgress);
-    volumeSlider.addEventListener('input', updateVolume);
+    progressBar.addEventListener('click', setProgress);
+    volumeSlider.addEventListener('input', setVolume);
 
-    // Set initial duration when metadata is loaded
-    audio.addEventListener('loadedmetadata', () => {
-        duration.textContent = formatTime(audio.duration);
-        currentTime.textContent = '0:00';
-    });
-
-    // Update play button when song ends
-    audio.addEventListener('ended', () => {
-        playPauseIcon.className = 'fas fa-play';
-    });
+    // Initialize
+    loadSong(currentSongIndex);
 });
