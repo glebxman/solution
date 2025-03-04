@@ -68,7 +68,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function setVolume() {
-        audio.volume = volumeSlider.value / 100;
+        const volume = volumeSlider.value;
+        audio.volume = volume / 100;
+        volumeSlider.style.setProperty('--volume-percentage', volume + '%');
     }
 
     // Event Listeners

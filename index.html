@@ -21,36 +21,42 @@
         </header>
         
         <section class="bio">
-            <p>Full-stack developer with expertise in JavaScript, CSS, Python, Java, and C++. Specializing in utility development, modding, and cheat creation. Passionate about UI/UX, reverse engineering, and optimizing performance. Always exploring new technologies and pushing boundaries.</p>
-        </section>
-        
-        <section class="links">
-            <a href="#" class="link"><i class="fab fa-discord fa-lg"></i> Discord</a>
-            <a href="#" class="link"><i class="fab fa-telegram-plane fa-lg"></i> Telegram</a>
-        </section>
-
-        <section class="audio-player">
-            <audio id="music" src="Nvxus Eloy (Slowed).mp3"></audio>
-            <div class="player-controls">
-                <div class="control-buttons">
-                    <button id="prevBtn" class="control-btn"><i class="fas fa-step-backward"></i></button>
-                    <button id="playPauseBtn" class="control-btn"><i class="fas fa-play"></i></button>
-                    <button id="nextBtn" class="control-btn"><i class="fas fa-step-forward"></i></button>
-                </div>
-                <div class="progress-container">
-                    <div class="time current">0:00</div>
-                    <div class="progress-bar">
-                        <div class="progress"></div>
-                    </div>
-                    <div class="time duration">0:00</div>
-                </div>
-                <div class="volume-container">
-                    <i class="fas fa-volume-up"></i>
-                    <input type="range" id="volumeSlider" min="0" max="100" value="100">
-                </div>
+            <div class="toggle-bio-btn">
+                <i class="fas fa-chevron-up"></i>
             </div>
-        </section>
-    </div>
-    <script src="player.js"></script>
-</body>
-</html>
+            <div class="container">
+                <header class="header">
+                    <p>Full-stack developer with expertise in JavaScript, CSS, Python, Java, and C++. Specializing in utility development, modding, and cheat creation. Passionate about UI/UX, reverse engineering, and optimizing performance. Always exploring new technologies and pushing boundaries.</p>
+                </section>
+                
+                <section class="links">
+                    <a href="https://discord.com/users/solution036" class="link"><i class="fab fa-discord fa-lg"></i><span>solution036</span></a>
+                    <a href="https://t.me/wrapik" class="link"><i class="fab fa-telegram-plane fa-lg"></i><span>@wrapik</span></a>
+                </section>
+
+                <section class="audio-player">
+                    <audio id="music" src="Nvxus Eloy (Slowed).mp3"></audio>
+                    <div class="player-controls">
+                        <div class="control-buttons">
+                            <button id="prevBtn" class="control-btn"><i class="fas fa-step-backward"></i></button>
+                            <button id="playPauseBtn" class="control-btn"><i class="fas fa-play"></i></button>
+                            <button id="nextBtn" class="control-btn"><i class="fas fa-step-forward"></i></button>
+                        </div>
+                        <div class="progress-container">
+                            <div class="time current">0:00</div>
+                            <div class="progress-bar">
+                                <div class="progress"></div>
+                            </div>
+                            <div class="time duration">0:00</div>
+                        </div>
+                        <div class="volume-container">
+                            <i class="fas fa-volume-up"></i>
+                            <input type="range" id="volumeSlider" min="0" max="100" value="100">
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <script src="script.js"></script>
+            <script src="player.js"></script>
+        </body>
+        </html>
