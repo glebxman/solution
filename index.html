@@ -2,61 +2,101 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minimalist Bio</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="code.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio 2</title>
 </head>
 <body>
-    <div class="video-background">
-        <iframe src="https://www.youtube.com/embed/QAIyRXGJdhA?autoplay=1&mute=1&loop=1&playlist=QAIyRXGJdhA" frameborder="0" allowfullscreen allow="autoplay"></iframe>
+    <div class="profile-container">
+        <div class="profile-card">
+            <div class="profile">
+                <div class="profile-image">
+                    <img class="ava" src="https://i.pinimg.com/736x/53/71/22/5371220ea202bf1bd8fe3e9f1cf85b6b.jpg" alt="avatar" width="200" height="200">
+                </div>
+                <h1 class="profile__title">Solution</h1>
+                <p class="profile__text">Coder</p>
+            </div>
+            <div class="skills-card">
+                <div class="skills">
+                    <h1 class="skills__title">Skills</h1>
+                    <ul class="skills__list">
+                        <li class="skills__item">HTML</li>
+                        <li class="skills__item">CSS</li>
+                        <li class="skills__item">JavaScript</li>
+                        <li class="skills__item">React</li>
+                        <li class="skills__item">Node.js</li>
+                        <li class="skills__item">Express</li>
+                        <li class="skills__item">MongoDB</li>
+                        <li class="skills__item">Python</li>
+                        <li class="skills__item">Django</li>
+                        <li class="skills__item">Flask</li>
+                        <li class="skills__item">Java</li>
+                        <li class="skills__item">C++</li>
+                        <li class="skills__item">C#</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="profile-desc">
+                <h1 class="profile__title profile__title--desc">Обо мне</h1>
+                <p class="profile__text">Я кодер, который пишет код быстрее, чем кофе остывает. Люблю находить баги (особенно не свои) и оптимизировать всё, что движется. Говорят, что мой любимый язык — это тот, в котором меньше всего ошибок компиляции.</p>
+                <ul class="profile__details">
+                    <li><strong>Локация:</strong> Москва, Россия</li>
+                    <li><strong>Образование:</strong> Бакалавр компьютерных наук</li>
+                    <li><strong>Интересы:</strong> Open source, искусственный интеллект, блокчейн, дизайн интерфейсов</li>
+                    <li><strong>Языки:</strong> Русский, английский, немного JavaScript-шуток</li>
+                    <li><strong>Хобби:</strong> Чтение техноблогов, шахматы, походы и поиск идеального синтаксиса</li>
+                </ul>
+            </div>
+            <div class="my-projects">
+                <h1 class="my-projects__title">Мои проекты</h1>
+                <ul class="my-projects__list">
+                    <li class="my-projects__item">
+                        <div class="icons">
+                            <i class='bx bx-message-square-dots'></i>
+                        </div>
+                        <strong>TaskMaster</strong> — веб-приложение для управления задачами на React и Node.js. Позволяет создавать, отслеживать и делиться задачами в команде.
+                    </li>
+                    <li class="my-projects__item">
+                        <div class="icons">
+                            <i class='bx bx-cloud' ></i>
+                        </div>
+                        <strong>WeatherApp</strong> — приложение для прогноза погоды с использованием API OpenWeatherMap. Реализовано на JavaScript и CSS.
+                    </li>
+                    <li class="my-projects__item">
+                        <div class="icons">
+                            <i class='bx bx-devices'></i>
+                        </div>
+                        <strong>ChatApp</strong> — чат-приложение на Node.js и Socket.io с возможностью обмена сообщениями в реальном времени.
+                    </li>
+                    <li class="my-projects__item">
+                        <div class="icons">
+                            <i class='bx bxl-bitcoin' ></i>
+                        </div>
+                        <strong>CryptoTracker</strong> — сервис для мониторинга курсов криптовалют с использованием внешних API и визуализацией данных на Chart.js.
+                    </li>
+                    <li class="my-projects__item">
+                        <div class="icons">
+                            <i class='bx bx-brain' ></i>
+                        </div>
+                        <strong>AI Chatbot</strong> — чат-бот на Python с использованием искусственного интеллекта для автоматизации ответов на вопросы пользователей.
+                    </li>
+                    <li class="my-projects__item">
+                        <div class="icons">
+                            <i class='bx bx-child'></i>    
+                        </div>
+                        <strong>Portfolio Website</strong> — персональный сайт-портфолио с анимациями и адаптивным дизайном, созданный на HTML, CSS и JavaScript.
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="social-card"></div>
+        </div>
     </div>
-    <div class="container">
-        <header class="header">
-            <div class="profile-image">
-                <img src="https://i.ibb.co/k2vFtZLY/photo-2025-02-24-07-17-37.jpg" alt="Profile Photo">
-            </div>
-            <h1 class="name">Solution</h1>
-            <p class="title">Creative Professional</p>
-        </header>
-        
-        <section class="bio">
-            <div class="toggle-bio-btn">
-                <i class="fas fa-chevron-up"></i>
-            </div>
-            <div class="container">
-                <header class="header">
-                    <p>Full-stack developer with expertise in JavaScript, CSS, Python, Java, and C++. Specializing in utility development, modding, and cheat creation. Passionate about UI/UX, reverse engineering, and optimizing performance. Always exploring new technologies and pushing boundaries.</p>
-                </section>
-                
-                <section class="links">
-                    <a href="https://discord.com/users/solution036" class="link"><i class="fab fa-discord fa-lg"></i><span>solution036</span></a>
-                    <a href="https://t.me/wrapik" class="link"><i class="fab fa-telegram-plane fa-lg"></i><span>@wrapik</span></a>
-                </section>
-
-                <section class="audio-player">
-                    <audio id="music" src="Nvxus Eloy (Slowed).mp3"></audio>
-                    <div class="player-controls">
-                        <div class="control-buttons">
-                            <button id="prevBtn" class="control-btn"><i class="fas fa-step-backward"></i></button>
-                            <button id="playPauseBtn" class="control-btn"><i class="fas fa-play"></i></button>
-                            <button id="nextBtn" class="control-btn"><i class="fas fa-step-forward"></i></button>
-                        </div>
-                        <div class="progress-container">
-                            <div class="time current">0:00</div>
-                            <div class="progress-bar">
-                                <div class="progress"></div>
-                            </div>
-                            <div class="time duration">0:00</div>
-                        </div>
-                        <div class="volume-container">
-                            <i class="fas fa-volume-up"></i>
-                            <input type="range" id="volumeSlider" min="0" max="100" value="100">
-                        </div>
-                    </div>
-                </section>
-            </div>
-            <script src="script.js"></script>
-            <script src="player.js"></script>
-        </body>
-        </html>
+    <div class="particles-container" id="particles-js"></div>
+</body>
+</html>
